@@ -1,0 +1,49 @@
+@page
+@model SettingsModel
+@{
+    ViewData["Title"] = "Advanced settings";
+}
+
+<h1>Advanced settings</h1>
+<p class="text-muted">Configure the temperature controller. Values are not saved or sent to hardware yet.</p>
+
+<form id="settings-form">
+    <section class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5">PID controller</h2>
+            <p class="text-muted">Adjust how the controller responds to process error.</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label" for="proportional">Proportional gain (Kp)</label>
+                    <input id="proportional" name="proportional" class="form-control" type="number" value="2.0" min="0" max="1000" step="0.1" required />
+                    <small class="form-text">Response strength for the current error.</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="integral">Integral time (Ti, seconds)</label>
+                    <input id="integral" name="integral" class="form-control" type="number" value="120" min="0" max="100000" step="1" required />
+                    <small class="form-text">Time constant for eliminating steady-state error.</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="derivative">Derivative time (Td, seconds)</label>
+                    <input id="derivative" name="derivative" class="form-control" type="number" value="0" min="0" max="100000" step="1" required />
+                    <small class="form-text">Response to the rate of change in process value.</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card mb-3">
+        <div class="card-body">
+            <h2 id="sensor-filter-heading" class="h5">Sensor filter time constant</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <input id="filter-constant" name="filterConstant" class="form-control" type="number" value="2.0" min="0" max="3600" step="0.1" aria-labelledby="sensor-filter-heading" required />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <p id="settings-feedback" class="text-success" aria-live="polite"></p>
+    <button class="btn btn-outline-secondary" type="reset">Reset values</button>
+    <button class="btn btn-primary" type="submit">Save configuration</button>
+</form>

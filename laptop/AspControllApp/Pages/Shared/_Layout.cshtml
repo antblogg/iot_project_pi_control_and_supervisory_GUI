@@ -1,0 +1,41 @@
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Temperature Control</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container navbar-content">
+                <a class="navbar-brand" asp-page="/Index">Temperature Control</a>
+                <div class="navbar-nav">
+                    <a class="nav-link @(currentPage == "/Index" ? "active" : "")"
+                       asp-page="/Index"
+                       aria-current="@(currentPage == "/Index" ? "page" : null)">Overview</a>
+                    <a class="nav-link @(currentPage == "/Settings" ? "active" : "")"
+                       asp-page="/Settings"
+                       aria-current="@(currentPage == "/Settings" ? "page" : null)">Advanced settings</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            Temperature control UI <span>·</span> Demo data only; no controller connected
+        </div>
+    </footer>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
