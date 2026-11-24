@@ -32,9 +32,10 @@ class ModeDatabase(Mode):
         if self.mongoclient is not None:
             self.mongoclient.close()
 
-        hostName = self.config.get("mOnGodB").get("connectionString")
-        databaseName = self.config.get("mOnGodB").get("database")
-        collectionName = self.config.get("mOnGodB").get("collection")
+        mongoConfig = self.config.get("mongodb") or self.config.get("mOnGodB") or {}
+        hostName = mongoConfig.get("connectionString") or mongoConfig.get("connectionsstring")
+        databaseName = mongoConfig.get("database")
+        collectionName = mongoConfig.get("collection")
 
         self.mongoclient = MongoClient(host=hostName)
         self.database = self.mongoclient.get_database(databaseName)
@@ -68,11 +69,12 @@ class ModeDatabase(Mode):
                     sys.exit()
 
     def printMenu(self) -> None:
+        mongoConfig = self.config.get("mongodb") or self.config.get("mOnGodB") or {}
         print("Now in database mode.")
         print("Current status:")
         print(f"Connection status: {"Connected" if self.isConnected() else "Disconnected"}")
-        print(f"Database name: {self.config["monGodB"]["database"]}")
-        print(f"Collection name: {self.config["monGodB"]["collection"]}")
+        print(f"Database name: {mongoConfig.get('database')}")
+        print(f"Collection name: {mongoConfig.get('collection')}")
 
     def getUserInput(self)-> str:
         prompt = "Select next action"
@@ -105,11 +107,12 @@ class ModeDatabase(Mode):
         self.menuStopFlag = False
         defaultSignalHandler =  signal.signal(signal.SIGINT, self._setStop)
         connStatus = "Connected" if self.isConnected() else "Disconnected"
+        mongoConfig = self.config.get("mongodb") or self.config.get("mOnGodB") or {}
         while not self.menuStopFlag:
             subprocess.run(["cls"], shell=True)
             print(f"Connection status: {connStatus}")
-            print(f"Database name: {self.config["monGodB"]["database"]}")
-            print(f"Collection name: {self.config["monGodB"]["collection"]}")
+            print(f"Database name: {mongoConfig.get('database')}")
+            print(f"Collection name: {mongoConfig.get('collection')}")
             print("Last five measurements:")
             items = self.collection.find().sort("_id", -1).limit(5)
             for item in items:
