@@ -4,93 +4,147 @@
     ViewData["Title"] = "Overview";
 }
 
-<h1>Temperature control</h1>
+<h1>Temperature analytics</h1>
+<p class="text-muted">Temperature readings from the past minute.</p>
+
+<section class="card chart-card mb-3">
+    <div class="card-body">
+        <div class="chart-header">
+            <div>
+                <h2 class="h5 mb-0">Temperature trend</h2>
+                <p class="text-muted mb-0">Process temperature over the past 60 seconds with a 30.0 °C reference line.</p>
+            </div>
+            <div class="chart-legend" aria-label="Chart legend">
+                <span class="legend-item"><span class="legend-swatch legend-process"></span>Process temperature</span>
+                <span class="legend-item"><span class="legend-swatch legend-reference"></span>Reference (30.0 °C)</span>
+            </div>
+        </div>
+        <div class="temperature-chart-wrap temperature-chart-wrap-prominent">
+            <svg class="temperature-chart" viewBox="0 0 760 280" role="img" aria-labelledby="chart-title chart-description">
+                <title id="chart-title">Temperature trend for the past minute</title>
+                <desc id="chart-description">Process temperature rises from about 27 degrees Celsius to about 30.5 degrees Celsius over the past minute, settling near a 30 degree Celsius reference line.</desc>
+                <g class="chart-grid">
+                    <line x1="52" y1="30" x2="744" y2="30" />
+                    <line x1="52" y1="82" x2="744" y2="82" />
+                    <line x1="52" y1="134" x2="744" y2="134" />
+                    <line x1="52" y1="186" x2="744" y2="186" />
+                    <line x1="52" y1="238" x2="744" y2="238" />
+                </g>
+                <g class="chart-labels">
+                    <text x="0" y="34">36°</text>
+                    <text x="0" y="86">33°</text>
+                    <text x="0" y="138">30°</text>
+                    <text x="0" y="190">27°</text>
+                    <text x="0" y="242">24°</text>
+                    <text x="52" y="269">−60 s</text>
+                    <text x="225" y="269">−45 s</text>
+                    <text x="398" y="269">−30 s</text>
+                    <text x="571" y="269">−15 s</text>
+                    <text x="744" y="269" text-anchor="end">Now</text>
+                </g>
+                <line class="chart-setpoint" x1="52" y1="138" x2="744" y2="138" />
+                <path class="chart-area" d="M52 190 C81 190, 110 186, 138 182 S196 177, 225 174 S268 169, 312 164 S355 159, 398 154 S441 150, 485 146 S528 143, 571 141 S614 138, 658 136 S701 134, 744 133 L744 238 L52 238 Z" />
+                <path class="chart-process" d="M52 190 C81 190, 110 186, 138 182 S196 177, 225 174 S268 169, 312 164 S355 159, 398 154 S441 150, 485 146 S528 143, 571 141 S614 138, 658 136 S701 134, 744 133" />
+                <circle class="chart-current-point" cx="744" cy="133" r="5" />
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section class="card mb-3">
+    <div class="card-body">
+        <h2 class="h5">Database connection</h2>
+        <p class="mb-2">
+            Status:
+            <strong class="@(Model.IsDatabaseConnected ? "text-success" : "text-muted")">
+                @(Model.IsDatabaseConnected ? "Connected" : "Not connected")
+            </strong>
+        </p>
+        <p class="text-muted">Enter the database password to connect.</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ConnectionMessage))
+        {
+            <p class="@(Model.ConnectionMessageIsError ? "text-error" : "text-success")" role="status">@Model.ConnectionMessage</p>
+        }
+
+        @if (Model.IsDatabaseConnected)
+        {
+            <form method="post" asp-page-handler="Disconnect" class="connection-form">
+                <button class="btn btn-outline-secondary" type="submit">Disconnect</button>
+            </form>
+        }
+        else
+        {
+            <form method="post" asp-page-handler="Connect" class="connection-form">
+                <label class="form-label" for="database-password">Database password</label>
+                <div class="connection-form-row">
+                    <input id="database-password" asp-for="DatabasePassword" class="form-control" type="password" autocomplete="off" />
+                    <button class="btn btn-primary" type="submit">Connect</button>
+                </div>
+            </form>
+        }
+    </div>
+</section>
 
 <div class="row mb-3">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <section class="card">
             <div class="card-body">
-                <h2 class="h6">Process temperature</h2>
-                <p class="display-value mb-0">72.4 °C</p>
+                <h2 class="h6">Current</h2>
+                <p class="display-value mb-0">@Model.Analytics.CurrentTemperatureC.ToString("0.0")<span class="small-value"> °C</span></p>
             </div>
         </section>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <section class="card">
             <div class="card-body">
-                <h2 class="h6">Setpoint</h2>
-                <p class="display-value mb-0" data-setpoint-display>75.0<span class="small-value"> °C</span></p>
+                <h2 class="h6">1-minute average</h2>
+                <p class="display-value mb-0">@Model.Analytics.AverageTemperatureC.ToString("0.0")<span class="small-value"> °C</span></p>
             </div>
         </section>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <section class="card">
             <div class="card-body">
-                <h2 class="h6">Controller output</h2>
-                <p class="display-value mb-0">38<span class="small-value">%</span></p>
+                <h2 class="h6">Minimum</h2>
+                <p class="display-value mb-0">@Model.Analytics.MinTemperatureC.ToString("0.0")<span class="small-value"> °C</span></p>
+            </div>
+        </section>
+    </div>
+    <div class="col-md-3">
+        <section class="card">
+            <div class="card-body">
+                <h2 class="h6">Maximum</h2>
+                <p class="display-value mb-0">@Model.Analytics.MaxTemperatureC.ToString("0.0")<span class="small-value"> °C</span></p>
             </div>
         </section>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-12">
         <section class="card">
             <div class="card-body">
-                <h2 class="h5">Temperature trend</h2>
-                <p class="text-muted">Sample process temperature and setpoint for the past hour.</p>
-                <div class="temperature-chart-wrap">
-                    <svg class="temperature-chart" viewBox="0 0 760 280" role="img" aria-labelledby="chart-title chart-description">
-                        <title id="chart-title">Temperature trend</title>
-                        <desc id="chart-description">Sample process temperature rises toward a 75 degree Celsius setpoint.</desc>
-                        <g class="chart-grid">
-                            <line x1="52" y1="30" x2="744" y2="30" />
-                            <line x1="52" y1="82" x2="744" y2="82" />
-                            <line x1="52" y1="134" x2="744" y2="134" />
-                            <line x1="52" y1="186" x2="744" y2="186" />
-                            <line x1="52" y1="238" x2="744" y2="238" />
-                        </g>
-                        <g class="chart-labels">
-                            <text x="0" y="34">90°</text>
-                            <text x="0" y="86">82°</text>
-                            <text x="0" y="138">74°</text>
-                            <text x="0" y="190">66°</text>
-                            <text x="0" y="242">58°</text>
-                            <text x="52" y="269">−60 min</text>
-                            <text x="225" y="269">−45 min</text>
-                            <text x="398" y="269">−30 min</text>
-                            <text x="571" y="269">−15 min</text>
-                            <text x="744" y="269" text-anchor="end">Now</text>
-                        </g>
-                        <line class="chart-setpoint" x1="52" y1="127" x2="744" y2="127" />
-                        <path class="chart-area" d="M52 211 C84 207 97 202 118 204 S153 196 175 200 S207 183 232 188 S265 174 289 182 S322 164 348 172 S378 156 402 162 S433 148 458 157 S487 141 513 151 S542 133 568 144 S596 137 624 144 S656 128 681 139 S716 121 744 132 L744 238 L52 238 Z" />
-                        <path class="chart-process" d="M52 211 C84 207 97 202 118 204 S153 196 175 200 S207 183 232 188 S265 174 289 182 S322 164 348 172 S378 156 402 162 S433 148 458 157 S487 141 513 151 S542 133 568 144 S596 137 624 144 S656 128 681 139 S716 121 744 132" />
-                        <circle class="chart-current-point" cx="744" cy="132" r="5" />
-                    </svg>
-                </div>
-            </div>
-        </section>
-    </div>
-    <div class="col-lg-4">
-        <section class="card">
-            <div class="card-body">
-                <h2 class="h5">Setpoint control</h2>
-                <form id="setpoint-form">
-                    <label class="form-label" for="setpoint-input">Setpoint (°C)</label>
-                    <div class="setpoint-control">
-                        <input id="setpoint-input" name="setpoint" class="form-control" type="number" value="75.0" min="0" max="200" step="0.5" required />
-                        <div class="setpoint-stepper">
-                            <button class="btn btn-outline-secondary" type="button" data-setpoint-step="0.5" aria-label="Increase setpoint by 0.5 degrees">+</button>
-                            <button class="btn btn-outline-secondary" type="button" data-setpoint-step="-0.5" aria-label="Decrease setpoint by 0.5 degrees">−</button>
-                        </div>
+                <h2 class="h5">Period summary</h2>
+                <p class="text-muted">Key statistics for the displayed time window.</p>
+                <dl class="analytics-list">
+                    <div class="analytics-item">
+                        <dt>Temperature range</dt>
+                        <dd>@Model.Analytics.TemperatureRangeC.ToString("0.0") °C</dd>
                     </div>
-                    <button class="btn btn-primary" type="submit">Apply setpoint</button>
-                    <span id="setpoint-feedback" class="small" aria-live="polite"></span>
-                </form>
-                <hr />
-                <p class="mb-2">Loop state: <strong id="loop-state-label">Running</strong></p>
-                <button id="loop-toggle" class="btn btn-outline-secondary btn-sm" type="button" aria-pressed="true">Pause</button>
-                <p class="small text-muted mt-3 mb-0">Preview only. No commands are sent to a controller.</p>
+                    <div class="analytics-item">
+                        <dt>Average rate of change</dt>
+                        <dd>@Model.Analytics.AverageRateOfChangeCPerSecond.ToString("+0.00;-0.00;0.00") °C/s</dd>
+                    </div>
+                    <div class="analytics-item">
+                        <dt>Samples in window</dt>
+                        <dd>@Model.Analytics.SampleCount</dd>
+                    </div>
+                    <div class="analytics-item">
+                        <dt>Latest reading</dt>
+                        <dd>@Model.Analytics.LatestReadingText</dd>
+                    </div>
+                </dl>
             </div>
         </section>
     </div>

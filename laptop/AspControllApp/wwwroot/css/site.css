@@ -28,6 +28,14 @@ body {
   align-items: center;
 }
 
+.navbar-spacer {
+  flex: 1;
+}
+
+.logout-form {
+  margin: 0;
+}
+
 .navbar-content {
   min-height: 56px;
 }
@@ -92,6 +100,20 @@ h2.h6 {
   color: #198754;
 }
 
+.text-error {
+  color: #dc3545;
+}
+
+.connection-form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.connection-form-row .form-control {
+  max-width: 360px;
+}
+
 .row {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -102,7 +124,7 @@ h2.h6 {
   margin-bottom: 16px;
 }
 
-.col-md-4, .col-md-6, .col-lg-8, .col-lg-4 {
+.col-12, .col-md-3, .col-md-4, .col-md-6, .col-lg-6, .col-lg-8, .col-lg-4 {
   grid-column: span 12;
   min-width: 0;
 }
@@ -200,27 +222,50 @@ h2.h6 {
   font-size: .875rem;
 }
 
-.setpoint-control {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.setpoint-stepper {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.setpoint-stepper .btn {
-  min-width: 40px;
-  padding: 0;
-}
-
 hr {
   margin: 16px 0;
   border: 0;
   border-top: 1px solid #dee2e6;
+}
+
+.chart-card .card-body {
+  padding: 20px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #6c757d;
+  font-size: .875rem;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 0;
+}
+
+.legend-process {
+  border-top: 3px solid #0d6efd;
+}
+
+.legend-reference {
+  border-top: 2px dashed #dc3545;
 }
 
 .temperature-chart-wrap {
@@ -228,9 +273,45 @@ hr {
   margin-top: 16px;
 }
 
+.temperature-chart-wrap-prominent {
+  margin-top: 20px;
+}
+
 .temperature-chart {
   display: block;
   width: 100%;
+  min-height: 360px;
+}
+
+.analytics-list {
+  margin: 0;
+}
+
+.analytics-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid #dee2e6;
+}
+
+.analytics-item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.analytics-item:last-child {
+  padding-bottom: 0;
+}
+
+.analytics-item dt {
+  color: #6c757d;
+}
+
+.analytics-item dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
 }
 
 .chart-grid line {
@@ -281,11 +362,13 @@ hr {
 }
 
 @media (min-width: 768px) {
+  .col-md-3 { grid-column: span 3; }
   .col-md-4 { grid-column: span 4; }
   .col-md-6 { grid-column: span 6; }
 }
 
 @media (min-width: 992px) {
+  .col-lg-6 { grid-column: span 6; }
   .col-lg-8 { grid-column: span 8; }
   .col-lg-4 { grid-column: span 4; }
 }
@@ -300,6 +383,23 @@ hr {
 
   .navbar-brand { margin-bottom: 6px; }
   .navbar-nav { gap: 16px; }
+  .chart-header {
+    flex-direction: column;
+  }
+  .connection-form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .connection-form-row .form-control {
+    max-width: none;
+  }
+  .analytics-item {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .analytics-item dd {
+    text-align: left;
+  }
   .temperature-chart-wrap { overflow-x: auto; }
-  .temperature-chart { min-width: 600px; }
+  .temperature-chart { min-width: 600px; min-height: 280px; }
 }

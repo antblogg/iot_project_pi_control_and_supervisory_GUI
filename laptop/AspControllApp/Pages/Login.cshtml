@@ -1,0 +1,23 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<h1>Sign in</h1>
+<p class="text-muted">Enter the site access password to continue.</p>
+
+<section class="card" style="max-width: 480px;">
+    <div class="card-body">
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <p class="text-error" role="alert">@Model.ErrorMessage</p>
+        }
+
+        <form method="post">
+            <label class="form-label" for="access-password">Access password</label>
+            <input id="access-password" asp-for="AccessPassword" class="form-control mb-3" type="password" autocomplete="current-password" required />
+            <button class="btn btn-primary" type="submit">Sign in</button>
+        </form>
+    </div>
+</section>
